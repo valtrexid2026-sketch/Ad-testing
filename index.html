@@ -146,8 +146,12 @@ function channelAvatar(channel){
 function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
 
 function videoCard(v){
+  /* Render each card as a real anchor so clicking opens /watch/?id=ID with
+   * native semantics: right-click "open in new tab", ⌘/middle-click, focus
+   * ring, screen-reader link. The href is relative to the current dir (/),
+   * so it resolves to /watch/?id=<id>. */
   return `
-  <article class="card" data-id="${escapeAttr(v.id)}" data-cat="${escapeAttr(v.cat)}">
+  <a class="card" href="watch/?id=${encodeURIComponent(v.id)}" data-id="${escapeAttr(v.id)}" data-cat="${escapeAttr(v.cat)}">
     <div class="thumb">
       <img loading="lazy" src="${escapeAttr(v.thumb)}" alt="${escapeAttr(v.title)}">
       <span class="duration">${escapeAttr(v.duration)}</span>
@@ -162,7 +166,7 @@ function videoCard(v){
         </div>
       </div>
     </div>
-  </article>`;
+  </a>`;
 }
 
 /* ---------- Home: render all videos sorted by addedAt desc ---------- */
@@ -173,12 +177,10 @@ function renderRecent(){
 }
 renderRecent();
 
-/* Click any card → navigate to /watch/?id=ID (full page nav, no overlay). */
-document.getElementById("grid").addEventListener("click",(e)=>{
-  const t = e.target.closest(".card");
-  if(!t || !t.dataset.id) return;
-  location.href = `watch/?id=${encodeURIComponent(t.dataset.id)}`;
-});
+/* Click-to-watch is handled natively by <a class="card" href="watch/?id=…">
+ * rendered from videoCard() above — no JS click handler needed. Native link
+ * semantics give us right-click "open in new tab", ⌘/middle-click, focus
+ * ring, and screen-reader "link" role for free. */
 </script>
 </body>
 </html>
