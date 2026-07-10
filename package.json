@@ -8,6 +8,6 @@
     "dev": "python3 -m http.server 3000 --bind 0.0.0.0",
     "preview": "bun run dev",
     "start": "bun run dev",
-    "build": "rm -rf dist && mkdir -p dist && cp index.html CNAME dist/"
+    "build": "rm -rf dist && mkdir -p dist && cp index.html CNAME dist/ && cp logo-light.png dist/ 2>/dev/null || true"
   }
 }
