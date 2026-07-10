@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
-<title>CodeTube - Home</title>
+<title>CodeTube - Video Platter</title>
 <style>
 :root{
   --bg:#ffffff;
@@ -19,6 +19,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.06);
   --radius:12px;
   --header-h:56px;
+  --chip-h:56px;
   --font-stack:"Roboto","Helvetica Neue","Noto Sans",system-ui,-apple-system,Segoe UI,Arial,sans-serif;
 }
 
@@ -107,82 +108,28 @@ header.app{
 .nav-link:hover{background:var(--bg-elev-2)}
 .nav-link.active{background:#0f0f0f;color:#fff;font-weight:600}
 
-/* ---------- Main ---------- */
-main{padding:calc(var(--header-h) + 28px) 24px 40px 24px; min-height:100vh; max-width:1600px; margin:0 auto}
+/* ---------- Chip row ---------- */
+nav.chips{
+  position:fixed; left:0; right:0; top:var(--header-h);
+  height:var(--chip-h); z-index:40;
+  display:flex; align-items:center; gap:12px; padding:0 24px;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid transparent;
+  overflow-x:auto; scrollbar-width:none;
+}
+nav.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto; padding:8px 14px; border-radius:8px; font-size:14px; font-weight:500;
+  background:var(--bg-elev); color:inherit; transition:background .15s ease,color .15s ease,transform .15s ease;
+}
+.chip:hover{background:var(--bg-elev-2)}
+.chip.active{background:#0f0f0f;color:#fff;font-weight:600}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* ---------- Hero (newest video) ---------- */
-.hero-wrap{margin-bottom:32px}
-.hero{
-  display:grid;
-  grid-template-columns: 1.45fr 1fr;
-  gap:28px;
-  padding:18px;
-  border-radius:18px;
-  background:var(--bg-soft);
-  cursor:pointer;
-  transition:background .15s ease,transform .15s ease;
-  overflow:hidden;
-  max-height:560px;
-}
-.hero:hover{background:var(--bg-elev)}
-.hero .thumb{
-  position:relative;
-  width:100%;
-  aspect-ratio:16/9;
-  max-height:520px;
-  overflow:hidden;
-  border-radius:12px;
-  background:#000;
-  align-self:center;
-}
-.hero .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
-.hero:hover .thumb img{transform:scale(1.02)}
-.hero .duration{position:absolute; right:10px; bottom:10px; background:rgba(0,0,0,.8); color:#fff; font-size:13px; font-weight:500; padding:3px 7px; border-radius:4px}
-.hero .body{
-  display:flex; flex-direction:column; justify-content:center;
-  gap:14px; min-width:0;
-}
-.hero .meta-top{display:flex; align-items:center; gap:12px; font-size:13px; color:var(--text-soft)}
-.hero .meta-top .ch{width:36px;height:36px;border-radius:50%;background:var(--bg-elev);overflow:hidden;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex:0 0 auto}
-.hero .meta-top .ch-name{font-weight:600;color:inherit;font-size:14px}
-.hero .meta-top .meta-line{font-size:12px;color:var(--text-soft)}
-.hero .pill{
-  display:inline-flex; align-items:center; gap:6px;
-  background:#0f0f0f; color:#fff;
-  padding:4px 10px; border-radius:999px;
-  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
-  align-self:flex-start;
-}
-.hero .pill .dot{width:6px; height:6px; background:#ff0033; border-radius:50%}
-.hero .title{
-  font-size:1.8rem; font-weight:700; margin:0;
-  line-height:1.2; color:inherit;
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
-}
-.hero .watch-cta{
-  align-self:flex-start; margin-top:6px;
-  display:inline-flex; align-items:center; gap:8px;
-  background:#0f0f0f; color:#fff;
-  padding:11px 22px; border-radius:999px;
-  font-weight:600; font-size:14px;
-  transition:transform .15s ease, background .15s ease;
-  box-shadow:0 4px 14px rgba(0,0,0,.18);
-}
-.hero:hover .watch-cta{transform:translateY(-1px)}
-.hero .watch-cta svg{width:18px;height:18px;fill:currentColor}
+/* ---------- Main / Grid ---------- */
+main{padding:calc(var(--header-h) + var(--chip-h) + 12px) 24px 40px 24px; min-height:100vh}
 
-.section-title{
-  font-size:1rem; font-weight:600; color:inherit;
-  margin:8px 0 16px 0; padding-bottom:8px;
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:10px;
-}
-.section-title .count{
-  background:var(--bg-elev-2); color:var(--text-soft);
-  padding:2px 8px; border-radius:999px; font-size:12px; font-weight:600;
-}
-
-/* ---------- Grid ---------- */
 .grid{
   display:grid; gap:24px 16px;
   grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
@@ -209,6 +156,7 @@ main{padding:calc(var(--header-h) + 28px) 24px 40px 24px; min-height:100vh; max-
 
 .info{display:flex;gap:12px;padding:0 4px 8px 4px}
 .info .ch{width:36px;height:36px;border-radius:50%;background:var(--bg-elev);flex:0 0 auto;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
+
 .meta{flex:1;min-width:0;padding-top:4px}
 .title{font-size:1rem;font-weight:600;color:inherit;margin:0 0 6px 0;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .sub{font-size:12px;color:var(--text-soft);display:flex;flex-direction:column;gap:2px}
@@ -266,16 +214,13 @@ main{padding:calc(var(--header-h) + 28px) 24px 40px 24px; min-height:100vh; max-
 /* ---------- Responsive ---------- */
 @media (max-width:900px){
   .player-body{grid-template-columns:1fr;padding:12px}
-  .hero{max-height:none}
-  .hero .title{font-size:1.4rem}
 }
 @media (max-width:700px){
   .app-center{max-width:none}
   .search-shell{max-width:none}
-  main{padding-left:8px;padding-right:8px;padding-top:calc(var(--header-h) + 16px)}
+  main{padding-left:8px;padding-right:8px;padding-top:calc(var(--header-h) + var(--chip-h) + 8px)}
   .grid{grid-template-columns:1fr;gap:24px}
-  .hero{grid-template-columns:1fr; padding:0; background:transparent; gap:14px; border-radius:0}
-  .hero .title{font-size:1.25rem}
+  nav.chips{padding:0 8px;gap:8px}
   .app-nav{display:none}
 }
 
@@ -303,8 +248,8 @@ main{padding:calc(var(--header-h) + 28px) 24px 40px 24px; min-height:100vh; max-
 
   <div class="app-end">
     <nav class="app-nav" aria-label="Site navigation">
-      <a href="index.html" class="nav-link active">Home</a>
-      <a href="platter.html" class="nav-link">Platter</a>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="platter.html" class="nav-link active">Platter</a>
     </nav>
     <div class="avatar" aria-label="Your account">U</div>
   </div>
@@ -322,14 +267,15 @@ main{padding:calc(var(--header-h) + 28px) 24px 40px 24px; min-height:100vh; max-
   </button>
 </section>
 
-<main>
-  <div class="hero-wrap" id="heroWrap"><!-- hero populated by JS --></div>
+<nav class="chips" id="chipBar" aria-label="Filter chips">
+  <button class="chip active" data-cat="all">All</button>
+  <button class="chip" data-cat="animation">Animation</button>
+  <button class="chip" data-cat="mixes">Mixes</button>
+  <button class="chip" data-cat="live">Live</button>
+</nav>
 
-  <h2 class="section-title">
-    More recent videos
-    <span class="count" id="restCount">0</span>
-  </h2>
-  <div class="grid" id="grid"><!-- rest of videos populated by JS --></div>
+<main>
+  <div class="grid" id="grid"><!-- populated by JS --></div>
 </main>
 
 <!-- Watch overlay -->
@@ -368,7 +314,7 @@ main{padding:calc(var(--header-h) + 28px) 24px 40px 24px; min-height:100vh; max-
 <script>
 /* ---------- Data ---------- */
 // `addedAt` is an explicit timestamp so Home can sort by "newest" unambiguously.
-// i=0 bbb -> 8 days ago (oldest); i=8 sintelAlt -> NOW (newest).
+// i=0 bbb -> 8 days ago (oldest); i=8 gopro -> NOW (newest).
 const videos = [
   {
     id:"bbb", title:"Big Buck Bunny - Official Blender Open Movie (4K)",
@@ -481,7 +427,6 @@ const videos = [
 
 /* ---------- Rendering ---------- */
 const grid = document.getElementById("grid");
-const heroWrap = document.getElementById("heroWrap");
 
 // Deterministic HSL color derived from a channel name string.
 function chipColor(channel){
@@ -517,31 +462,6 @@ function videoCard(v){
   </article>`;
 }
 
-function heroCard(v){
-  return `
-  <article class="card hero" data-id="${v.id}" data-cat="${v.cat}">
-    <div class="thumb">
-      <img loading="lazy" src="${v.thumb}" alt="${v.title.replace(/"/g,'&quot;')}">
-      <span class="duration">${v.duration}</span>
-    </div>
-    <div class="body">
-      <span class="pill"><span class="dot"></span>Newest on CodeTube</span>
-      <div class="meta-top">
-        ${channelAvatar(v.channel)}
-        <div>
-          <div class="ch-name">${v.channel}</div>
-          <div class="meta-line">${v.views} &middot; ${v.date} &middot; ${v.duration}</div>
-        </div>
-      </div>
-      <h1 class="title">${v.title}</h1>
-      <span class="watch-cta" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        Watch now
-      </span>
-    </div>
-  </article>`;
-}
-
 // Compact Advertisement card sized to slot into the "Up next" sidebar.
 // The ad shows only while a video is playing (added inside openVideo()).
 function adRecCard(){
@@ -558,15 +478,22 @@ function adRecCard(){
   </div>`;
 }
 
-/* Home page: sort by addedAt desc → newest = hero, rest = grid. */
-function renderNewest(){
-  const sorted = [...videos].sort((a,b) => (b.addedAt||0) - (a.addedAt||0));
-  const [hero, ...rest] = sorted;
-  heroWrap.innerHTML = heroCard(hero);
-  grid.innerHTML = rest.map(videoCard).join("");
-  document.getElementById("restCount").textContent = rest.length;
+function render(category){
+  const filtered = category === "all" ? videos : videos.filter(v => v.cat === category);
+  let html = "";
+  filtered.forEach(v => { html += videoCard(v); });
+  grid.innerHTML = html;
 }
-renderNewest();
+render("all");
+
+/* ---------- Filter chips ---------- */
+document.getElementById("chipBar").addEventListener("click",(e)=>{
+  const t = e.target.closest(".chip");
+  if(!t) return;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  t.classList.add("active");
+  render(t.dataset.cat);
+});
 
 /* ---------- Watch overlay ---------- */
 const overlay = document.getElementById("overlay");
@@ -590,6 +517,7 @@ function openVideo(v){
   watchDate.textContent = v.date;
   watchChName.textContent = v.channel;
   watchChSubs.textContent = v.subs;
+  // Re-query the DOM each call so a stale reference never drifts after outerHTML swap.
   const prevAv = document.getElementById("watchChAvatar");
   if(prevAv) prevAv.outerHTML = channelAvatar(v.channel, "watchChAvatar");
   watchDescription.innerHTML = `<div class="stats">${v.views} &middot; ${v.date}</div>${v.desc}`;
@@ -615,11 +543,11 @@ function closePlayer(){
   document.body.style.overflow = "";
 }
 
-// One delegated handler covers both the hero card and the grid cards.
-document.querySelector("main").addEventListener("click",(e)=>{
+grid.addEventListener("click",(e)=>{
   const t = e.target.closest(".card");
   if(!t) return;
-  const v = videos.find(x=>x.id===t.dataset.id);
+  const id = t.dataset.id;
+  const v = videos.find(x=>x.id===id);
   if(v) openVideo(v);
 });
 
@@ -665,14 +593,18 @@ document.addEventListener("click",(e)=>{
   closeSearch();
 });
 
-// Enter inside the search field. Home has no chip bar, so deselect chips
-// *if present* and otherwise just call renderNewest() directly.
+// Enter inside the search field filters the grid. Dropdown stays open so the
+// user can keep refining without re-opening it. (Platter page has a chip bar.)
 searchDropdownInput.addEventListener("keydown",(e)=>{
   if(e.key !== "Enter") return;
   const q = e.currentTarget.value.trim().toLowerCase();
   if(!q){
-    renderNewest();
-    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    render("all");
+    const allChip = document.querySelector('.chip[data-cat="all"]');
+    if(allChip){
+      document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+      allChip.classList.add("active");
+    }
     return;
   }
   const found = videos.filter(v=> v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
