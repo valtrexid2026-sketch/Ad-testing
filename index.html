@@ -49,7 +49,7 @@ header.app{
 .icon-btn svg{width:24px;height:24px;fill:currentColor}
 
 .brand{display:inline-flex;align-items:center;gap:6px;padding:0 8px}
-.brand-img{display:block;width:auto;height:22px;max-width:56px;flex:0 0 auto}
+.brand-img{display:block;width:auto;height:auto;max-height:36px;max-width:240px;flex:0 0 auto}
 /* .brand-text removed — the wordmark is baked into logo-light.png */
 
 .search-shell{display:flex;flex:1;align-items:center;border:1px solid var(--border);border-radius:40px 0 0 40px;overflow:hidden;  background:#f8f8f8;height:40px;transition:border-color .15s ease,box-shadow .15s ease}
@@ -59,10 +59,6 @@ header.app{
 .search-btn{width:64px;height:40px;background:var(--bg-elev);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border);transition:background .15s ease}
 .search-btn:hover{background:var(--bg-elev-2)}
 .search-btn svg{width:22px;height:22px;fill:currentColor}
-
-.mic-btn{width:40px;height:40px;border-radius:50%;background:var(--bg-elev);display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease}
-.mic-btn:hover{background:var(--bg-elev-2)}
-.mic-btn svg{width:22px;height:22px;fill:currentColor}
 
 .search-toggle{
   width:40px;height:40px;border-radius:50%;
@@ -180,9 +176,6 @@ main{padding:calc(var(--header-h) + var(--chip-h) + 12px) 24px 40px 24px; min-he
 .watch-channel .ch{width:40px;height:40px}
 .watch-channel .name{font-weight:600;color:inherit}
 .watch-channel .subs{font-size:12px;color:var(--text-soft)}
-.subscribe-btn{margin-left:auto;background:#0f0f0f;color:#fff;padding:10px 16px;border-radius:24px;font-weight:600;font-size:14px;transition:opacity .15s ease}
-.subscribe-btn:hover{opacity:.85}
-
 .description-box{background:var(--bg-soft);border-radius:var(--radius);padding:12px;font-size:14px;color:inherit;line-height:1.45;margin-top:8px}
 .description-box .stats{font-weight:600;margin-bottom:6px}
 
@@ -204,18 +197,6 @@ main{padding:calc(var(--header-h) + var(--chip-h) + 12px) 24px 40px 24px; min-he
   nav.chips{padding:0 8px;gap:8px}
 }
 
-/* Sidebar drawer (lazy, mini) */
-aside.drawer{
-  position:fixed;top:var(--header-h);left:0;bottom:0;width:240px;background:var(--bg-soft);
-  transform:translateX(-100%);transition:transform .2s ease;z-index:60;padding:12px 0;border-right:1px solid var(--border);overflow:auto
-}
-aside.drawer.open{transform:translateX(0)}
-.drawer-item{display:flex;align-items:center;gap:20px;padding:0 24px;height:40px;color:inherit;border-radius:8px;margin:0 12px;transition:background .15s ease;font-size:14px}
-.drawer-item:hover{background:var(--bg-elev)}
-.drawer-item.active{background:var(--bg-elev);font-weight:600}
-.drawer-item svg{width:24px;height:24px;fill:currentColor}
-.drawer-section-title{padding:8px 24px;font-size:14px;color:var(--text-soft);font-weight:600;border-top:1px solid var(--border);margin-top:8px}
-
 /* small visual touch: subtle hover overlay */
 .thumb::after{
   content:"";position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .15s ease;pointer-events:none;
@@ -227,11 +208,8 @@ aside.drawer.open{transform:translateX(0)}
 
 <header class="app">
   <div class="app-start">
-    <button class="icon-btn" id="menuBtn" aria-label="Menu">
-      <svg viewBox="0 0 24 24"><path d="M21 6H3V5h18v1zm0 5H3v1h18v-1zm0 6H3v1h18v-1z"/></svg>
-    </button>
     <a href="#" class="brand" aria-label="CodeTube home">
-      <img src="logo-light.png" alt="CodeTube" class="brand-img" width="56" height="22">
+      <img src="logo-light.png" alt="CodeTube" class="brand-img">
     </a>
   </div>
 
@@ -239,18 +217,9 @@ aside.drawer.open{transform:translateX(0)}
     <button class="search-toggle" id="searchToggle" aria-label="Open search" aria-expanded="false" aria-controls="searchDropdown">
       <svg viewBox="0 0 24 24"><path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
     </button>
-    <button class="mic-btn" aria-label="Search with your voice">
-      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-    </button>
   </div>
 
   <div class="app-end">
-    <button class="icon-btn" aria-label="Create">
-      <svg viewBox="0 0 24 24"><path d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm7-7v12c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h2.5l1.7-2h8.6l1.7 2H21c1.1 0 2 .9 2 2zm-2 0H3v12h16V6z"/></svg>
-    </button>
-    <button class="icon-btn" aria-label="Notifications">
-      <svg viewBox="0 0 24 24"><path d="M10 20h4c0 1.1-.9 2-2 2s-2-.9-2-2zm10-2.65V19H4v-1.65l2-1.88V11c0-2.79 1.91-5.14 4.5-5.81V3.5a1.5 1.5 0 1 1 3 0V5.19c2.59.67 4.5 3.02 4.5 5.81v4.47l2 1.88zM17 11c0-2.76-2.24-5-5-5s-5 2.24-5 5v5.45l-2 1.88V18h14v-1.67l-2-1.88V11z"/></svg>
-    </button>
     <div class="avatar" aria-label="Your account">U</div>
   </div>
 </header>
@@ -269,32 +238,10 @@ aside.drawer.open{transform:translateX(0)}
 
 <nav class="chips" id="chipBar" aria-label="Filter chips">
   <button class="chip active" data-cat="all">All</button>
-  <button class="chip" data-cat="music">Music</button>
-  <button class="chip" data-cat="gaming">Gaming</button>
+  <button class="chip" data-cat="animation">Animation</button>
   <button class="chip" data-cat="mixes">Mixes</button>
   <button class="chip" data-cat="live">Live</button>
-  <button class="chip" data-cat="cs">Computer programming</button>
-  <button class="chip" data-cat="animation">Animation</button>
-  <button class="chip" data-cat="recent">Recently uploaded</button>
-  <button class="chip" data-cat="watched">Watched</button>
-  <button class="chip" data-cat="new">New to you</button>
-  <button class="chip" data-cat="dev">Devlogs</button>
-  <button class="chip" data-cat="ai">AI</button>
 </nav>
-
-<aside class="drawer" id="drawer" aria-label="Main menu">
-  <a class="drawer-item active" href="#"><svg viewBox="0 0 24 24"><path d="M4 21V10.08l8-6.96 8 6.96V21h-6v-7H10v7H4z"/></svg>Home</a>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M10 14.65v-5.3L15 12l-5 2.65zm7.77-4.33c-.77-.32-1.2-.5-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.65v-5.3L15 12l-5 2.65z"/></svg>Shorts</a>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M10 18v-6l5 3-5 3zm7-15H7v1h10V3zm3 3H4v1h16V6zm2 3H2v12h20V9zM3 10h18v10H3V10z"/></svg>Subscriptions</a>
-  <div class="drawer-section-title">You</div>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M11 7l6 6H5z"/></svg>History</a>
-  <div class="drawer-section-title">Subscriptions</div>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Blender</a>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Google Sample Videos</a>
-  <div class="drawer-section-title">More from CodeTube</div>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>CodeTube Premium</a>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>CodeTube Studio</a>
-</aside>
 
 <main>
   <div class="grid" id="grid"><!-- populated by JS --></div>
@@ -322,7 +269,6 @@ aside.drawer.open{transform:translateX(0)}
           <div class="name" id="watchChName"></div>
           <div class="subs" id="watchChSubs"></div>
         </div>
-        <button class="subscribe-btn">Subscribe</button>
       </div>
       <div class="description-box" id="watchDescription"></div>
     </div>
@@ -501,12 +447,6 @@ document.getElementById("chipBar").addEventListener("click",(e)=>{
   document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
   t.classList.add("active");
   render(t.dataset.cat);
-});
-
-/* ---------- Drawer ---------- */
-const drawer = document.getElementById("drawer");
-document.getElementById("menuBtn").addEventListener("click",()=>{
-  drawer.classList.toggle("open");
 });
 
 /* ---------- Watch overlay ---------- */
