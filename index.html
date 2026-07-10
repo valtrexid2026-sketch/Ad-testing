@@ -1,11 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>VideoTube</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#0f0f0f;
+color:white;
+}
+
+header{
+height:60px;
+background:#181818;
+display:flex;
+align-items:center;
+padding:0 20px;
+font-size:24px;
+font-weight:bold;
+border-bottom:1px solid #333;
+}
+
+.logo{
+color:red;
+margin-right:8px;
+}
+
+.container{
+display:flex;
+gap:20px;
+padding:20px;
+}
+
+.player{
+flex:3;
+}
+
+.sidebar{
+flex:1;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+video{
+width:100%;
+border-radius:12px;
+background:black;
+}
+
+.title{
+font-size:22px;
+margin-top:12px;
+margin-bottom:8px;
+}
+
+.description{
+color:#aaa;
+line-height:1.5;
+}
+
+.videoCard{
+display:flex;
+gap:10px;
+cursor:pointer;
+background:#181818;
+padding:8px;
+border-radius:10px;
+transition:.2s;
+}
+
+.videoCard:hover{
+background:#252525;
+}
+
+.videoCard img{
+width:150px;
+height:84px;
+object-fit:cover;
+border-radius:8px;
+}
+
+.videoCard h3{
+font-size:15px;
+margin-bottom:6px;
+}
+
+.videoCard p{
+font-size:13px;
+color:#999;
+}
+
+#ad{
+background:#181818;
+padding:10px;
+border-radius:10px;
+overflow:hidden;
+}
+
+.mobileList{
+display:none;
+margin-top:20px;
+}
+
+@media(max-width:900px){
+
+.container{
+flex-direction:column;
+padding:10px;
+}
+
+.sidebar{
+display:none;
+}
+
+.mobileList{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+video{
+border-radius:0;
+}
+
+.title{
+font-size:20px;
+}
+}
+</style>
+</head>
+<body>
+
+<header>
+<span class="logo">▶</span>VideoTube
+</header>
+
+<div class="container">
+
+<div class="player">
+
+<video id="player" controls poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217">
+<source id="source"
+src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+type="video/mp4">
+</video>
+
+<div class="title" id="title">
+Big Buck Bunny
+</div>
+
+<div class="description" id="description">
+Copyright-free Blender Foundation short film.
+</div>
+
+<div class="mobileList" id="mobileVideos"></div>
+
+</div>
+
+<div class="sidebar" id="sidebar">
+
+</div>
+
+</div>
+
+<script>
+
+const videos=[
+
+{
+title:"Big Buck Bunny",
+desc:"Blender Foundation",
+thumb:"https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217",
+src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+},
+
+{
+title:"Elephants Dream",
+desc:"Open Movie",
+thumb:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Elephants_Dream_s5_both.jpg/640px-Elephants_Dream_s5_both.jpg",
+src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+},
+
+{
+title:"For Bigger Joyrides",
+desc:"Google Sample",
+thumb:"https://dummyimage.com/320x180/555/fff&text=Joyrides",
+src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+},
+
+{
+title:"Sintel Trailer",
+desc:"Blender Foundation",
+thumb:"https://dummyimage.com/320x180/444/fff&text=Sintel",
+src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+},
+
+{
+title:"Tears of Steel",
+desc:"Open Movie",
+thumb:"https://dummyimage.com/320x180/666/fff&text=Tears+of+Steel",
+src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+}
+
+];
+
+const sidebar=document.getElementById("sidebar");
+const mobile=document.getElementById("mobileVideos");
+
+function loadVideo(v){
+
+document.getElementById("source").src=v.src;
+
+const player=document.getElementById("player");
+
+player.load();
+
+player.play();
+
+document.getElementById("title").innerText=v.title;
+document.getElementById("description").innerText=v.desc;
+
+}
+
+function createCard(v){
+
+const div=document.createElement("div");
+
+div.className="videoCard";
+
+div.innerHTML=`
+<img src="${v.thumb}">
+<div>
+<h3>${v.title}</h3>
+<p>${v.desc}</p>
+</div>
+`;
+
+div.onclick=()=>loadVideo(v);
+
+return div;
+
+}
+
+videos.forEach((v,i)=>{
+
+const card=createCard(v);
+
+sidebar.appendChild(card.cloneNode(true));
+
+sidebar.lastChild.onclick=()=>loadVideo(v);
+
+mobile.appendChild(card);
+
+if(i===1){
+
+const ad=document.createElement("div");
+
+ad.id="ad";
+
+ad.innerHTML=`
+
 <!-- BEGIN AADS AD UNIT 2447509 -->
 
-<div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
-          <iframe data-aa='2447509' src='//acceptable.a-ads.com/2447509/?size=Adaptive'
-                            style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
-          <div style="width: 70%;margin:auto;position: absolute;left: 0;right: 0">
-            <a target="_blank" style="display:inline-block;font-size: 13px;color: #263238;padding: 4px 10px;background: #F8F8F9;text-decoration: none; border-radius: 0 0 4px 4px;" id="frame-link" href="https://aads.com/campaigns/new/?source_id=2447509&source_type=ad_unit&partner=2447509">Advertise here</a>
-          </div>
-        </div>
+<div id="frame" style="width:100%;margin:auto;position:relative;z-index:99998;">
+<iframe
+data-aa='2447509'
+src='//acceptable.a-ads.com/2447509/?size=Adaptive'
+style='border:0;padding:0;width:100%;height:250px;overflow:hidden;display:block;'>
+</iframe>
 
-<!-- END AADS AD UNIT 2447509 -->
+<div style="position:absolute;left:0;right:0;margin:auto;width:100%;text-align:center;">
+<a target="_blank"
+href="https://aads.com/campaigns/new/?source_id=2447509&source_type=ad_unit&partner=2447509"
+style="display:inline-block;font-size:13px;color:#263238;padding:4px 10px;background:#F8F8F9;text-decoration:none;border-radius:0 0 4px 4px;">
+Advertise here
+</a>
+</div>
+
+</div>
+
+<!-- END AADS AD UNIT -->
+
+`;
+
+sidebar.appendChild(ad);
+
+mobile.appendChild(ad.cloneNode(true));
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
