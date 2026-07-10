@@ -2,12 +2,12 @@
   "name": "ad-testing",
   "private": true,
   "version": "1.0.0",
-  "description": "Static CodeTube site — Home (newest videos) + Platter (browse all with category filter).",
+  "description": "Static CodeTube site — single Home page (recent videos) and /watch/?id=ID watch page.",
   "scripts": {
     "install": "echo \"✅ ad-testing: static site — no external dependencies to install\"",
     "dev": "python3 -m http.server 3000 --bind 0.0.0.0",
     "preview": "bun run dev",
     "start": "bun run dev",
-    "build": "rm -rf dist && mkdir -p dist && cp index.html platter.html CNAME dist/ && cp logo-light.png dist/ 2>/dev/null || true"
+    "build": "rm -rf dist && mkdir -p dist && cp index.html CNAME data.js dist/ && cp -R watch dist/ && cp logo-light.png dist/ 2>/dev/null || true"
   }
 }
