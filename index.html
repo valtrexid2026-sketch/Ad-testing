@@ -64,6 +64,35 @@ header.app{
 .mic-btn:hover{background:var(--bg-elev-2)}
 .mic-btn svg{width:22px;height:22px;fill:#fff}
 
+.search-toggle{
+  width:40px;height:40px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:none;border:0;cursor:pointer;color:#fff;
+  transition:background .15s ease;
+}
+.search-toggle:hover,.search-toggle.active{background:var(--bg-elev-2)}
+.search-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.search-toggle svg{width:24px;height:24px;fill:#fff}
+
+/* Search dropdown panel - slides down from below the top nav */
+.search-dropdown{
+  position:fixed; left:0; right:0; top:var(--header-h);
+  z-index:45;
+  padding:14px 24px;
+  display:flex; gap:12px; align-items:center;
+  background:rgba(15,15,15,.96);
+  backdrop-filter:saturate(180%) blur(8px);
+  -webkit-backdrop-filter:saturate(180%) blur(8px);
+  border-bottom:1px solid var(--border);
+  transform:translateY(-12px); opacity:0; visibility:hidden;
+  transition:transform .18s ease, opacity .15s ease, visibility .15s linear;
+}
+.search-dropdown.open{
+  transform:translateY(0); opacity:1; visibility:visible;
+}
+.search-dropdown .search-shell{flex:1; max-width:720px; margin:0 auto}
+.search-close{flex:0 0 auto}
+
 .avatar{
   width:32px;height:32px;border-radius:50%;
   background:linear-gradient(135deg,#ff7a00,#ff0033);
@@ -208,12 +237,9 @@ aside.drawer.open{transform:translateX(0)}
   </div>
 
   <div class="app-center">
-    <form class="search-shell" onsubmit="event.preventDefault();return false">
-      <input type="search" placeholder="Search" aria-label="Search">
-      <button class="search-btn" type="submit" aria-label="Search">
-        <svg viewBox="0 0 24 24"><path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
-      </button>
-    </form>
+    <button class="search-toggle" id="searchToggle" aria-label="Open search" aria-expanded="false" aria-controls="searchDropdown">
+      <svg viewBox="0 0 24 24"><path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+    </button>
     <button class="mic-btn" aria-label="Search with your voice">
       <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
     </button>
@@ -229,6 +255,18 @@ aside.drawer.open{transform:translateX(0)}
     <div class="avatar" aria-label="Your account">U</div>
   </div>
 </header>
+
+<section class="search-dropdown" id="searchDropdown" role="region" aria-label="Search panel">
+  <form class="search-shell search-shell--dropdown" onsubmit="event.preventDefault();return false">
+    <input type="search" placeholder="Search CodeTube" aria-label="Search" autocomplete="off">
+    <button class="search-btn" type="submit" aria-label="Search">
+      <svg viewBox="0 0 24 24"><path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+    </button>
+  </form>
+  <button class="icon-btn search-close" id="searchClose" aria-label="Close search">
+    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+  </button>
+</section>
 
 <nav class="chips" id="chipBar" aria-label="Filter chips">
   <button class="chip active" data-cat="all">All</button>
@@ -538,17 +576,58 @@ recList.addEventListener("click",(e)=>{
 closeWatch.addEventListener("click",closePlayer);
 document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && overlay.classList.contains("open")) closePlayer(); });
 
-/* ---------- Search (demo) ---------- */
-document.querySelector(".search-shell input").addEventListener("keydown",(e)=>{
-  if(e.key==="Enter"){
-    const q = e.currentTarget.value.trim().toLowerCase();
-    if(!q){ render("all"); document.querySelector('.chip[data-cat="all"]').click(); return; }
-    const found = videos.filter(v=> v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
-    if(found.length === 0){
-      grid.innerHTML = `<div style="color:#aaa;padding:60px 40px;text-align:center;font-size:18px">No results for &ldquo;${q.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}&rdquo;<div style="font-size:13px;color:#717171;margin-top:8px">Try different keywords or check the spelling.</div></div>`;
-    } else {
-      grid.innerHTML = adCard() + found.map(videoCard).join("");
-    }
+/* ---------- Search: icon button + dropdown panel ---------- */
+const searchToggle = document.getElementById("searchToggle");
+const searchDropdown = document.getElementById("searchDropdown");
+const searchClose = document.getElementById("searchClose");
+const searchDropdownInput = searchDropdown.querySelector("input");
+
+function openSearch(){
+  searchDropdown.classList.add("open");
+  searchToggle.classList.add("active");
+  searchToggle.setAttribute("aria-expanded", "true");
+  // Focus the input after the open transition starts.
+  setTimeout(()=>{ if(searchDropdownInput) searchDropdownInput.focus(); }, 60);
+}
+function closeSearch(){
+  searchDropdown.classList.remove("open");
+  searchToggle.classList.remove("active");
+  searchToggle.setAttribute("aria-expanded", "false");
+  if(searchDropdownInput) searchDropdownInput.blur();
+}
+function toggleSearch(){
+  searchDropdown.classList.contains("open") ? closeSearch() : openSearch();
+}
+
+searchToggle.addEventListener("click", toggleSearch);
+searchClose.addEventListener("click", closeSearch);
+
+// Click anywhere outside the dropdown closes it.
+document.addEventListener("click",(e)=>{
+  if(!searchDropdown.classList.contains("open")) return;
+  if(searchDropdown.contains(e.target) || searchToggle.contains(e.target)) return;
+  closeSearch();
+});
+
+// Enter inside the search field filters the grid. Dropdown stays open so the
+// user can keep refining without re-opening it.
+searchDropdownInput.addEventListener("keydown",(e)=>{
+  if(e.key !== "Enter") return;
+  const q = e.currentTarget.value.trim().toLowerCase();
+  if(!q){ render("all"); document.querySelector('.chip[data-cat="all"]').click(); return; }
+  const found = videos.filter(v=> v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
+  if(found.length === 0){
+    grid.innerHTML = `<div style="color:#aaa;padding:60px 40px;text-align:center;font-size:18px">No results for &ldquo;${q.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}&rdquo;<div style="font-size:13px;color:#717171;margin-top:8px">Try different keywords or check the spelling.</div></div>`;
+  } else {
+    grid.innerHTML = adCard() + found.map(videoCard).join("");
+  }
+});
+
+// Escape closes the dropdown and sends focus back to the toggle.
+document.addEventListener("keydown",(e)=>{
+  if(e.key === "Escape" && searchDropdown.classList.contains("open")){
+    closeSearch();
+    searchToggle.focus();
   }
 });
 </script>
