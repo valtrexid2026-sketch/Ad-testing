@@ -1,25 +1,565 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VideoHub</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f0f0f">
+<title>CodeTube - Your code, on demand</title>
 <style>
-body{margin:0;font-family:system-ui;background:#fafafa;color:#222}
-header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 16px;display:flex;align-items:center;gap:16px}
-header img{height:42px}.search{flex:1}.search input{width:100%;padding:10px 16px;border-radius:24px;border:1px solid #ccc}
-.wrap{display:grid;grid-template-columns:minmax(0,2fr) 380px;gap:20px;padding:20px}
-video{width:100%;border-radius:12px;background:#000}
-.card{display:flex;gap:10px;padding:8px;background:#fff;border:1px solid #e5e5e5;border-radius:10px;margin-bottom:10px;cursor:pointer}
-.card img{width:150px;height:84px;border-radius:8px}
-#ad iframe{width:100%;height:84px;border:0}
-@media(max-width:900px){.wrap{grid-template-columns:1fr}}
-</style></head><body>
-<header><img src="codetube-logo-light - Bewerkt_20260708_012238_0000.png"><div class="search"><input placeholder="Search"></div></header>
-<div class="wrap"><main><video id="p" controls><source id="s"></video><h2 id="tt"></h2><p id="dd"></p></main><aside id="list"></aside></div>
+:root{
+  --bg:#0f0f0f;
+  --bg-soft:#181818;
+  --bg-elev:#272727;
+  --bg-elev-2:#3a3a3a;
+  --border:rgba(255,255,255,.1);
+  --text:#f1f1f1;
+  --text-soft:#aaaaaa;
+  --text-mute:#717171;
+  --accent:#ff0033;        /* YouTube-red for hover/duration */
+  --shadow:0 4px 12px rgba(0,0,0,.4);
+  --radius:12px;
+  --header-h:56px;
+  --chip-h:56px;
+  --font-stack:"Roboto","Helvetica Neue","Noto Sans",system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--font-stack);font-size:14px;line-height:1.4;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ---------- Header ---------- */
+header.app{
+  position:fixed; inset:0 0 auto 0; height:var(--header-h); z-index:50;
+  display:flex; align-items:center; gap:16px; padding:0 16px;
+  background:rgba(15,15,15,.92);
+  backdrop-filter:saturate(180%) blur(8px);
+  -webkit-backdrop-filter:saturate(180%) blur(8px);
+}
+.app-start,.app-end{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.app-center{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:8px;max-width:700px;margin:0 auto}
+
+.icon-btn{
+  width:40px; height:40px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+  color:#fff; transition:background .15s ease;
+}
+.icon-btn:hover{background:var(--bg-elev-2)}
+.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icon-btn svg{width:24px;height:24px;fill:#fff}
+
+.brand{display:inline-flex;align-items:center;gap:6px;padding:0 8px}
+.brand svg{width:32px;height:22px}
+.brand-text{font-weight:700;font-size:1.35rem;letter-spacing:-.02em;color:#fff;line-height:1}
+
+/* Brand mark: dark rounded rect + terminal `>_` */
+.brand-mark rect.bg{fill:#272727}
+.brand-mark .gt{stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.brand-mark .un{fill:#fff}
+
+.search-shell{display:flex;flex:1;align-items:center;border:1px solid var(--border);border-radius:40px 0 0 40px;overflow:hidden;background:#121212;height:40px;transition:border-color .15s ease,box-shadow .15s ease}
+.search-shell:focus-within{border-color:#1c62b9;box-shadow:inset 0 0 0 1px #1c62b9}
+.search-shell input{flex:1;border:0;background:transparent;padding:0 16px;color:#fff;font-size:1rem;outline:none;min-width:0}
+.search-shell input::placeholder{color:#717171}
+.search-btn{width:64px;height:40px;background:var(--bg-elev);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border);transition:background .15s ease}
+.search-btn:hover{background:var(--bg-elev-2)}
+.search-btn svg{width:22px;height:22px;fill:#fff}
+
+.mic-btn{width:40px;height:40px;border-radius:50%;background:var(--bg-elev);display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease}
+.mic-btn:hover{background:var(--bg-elev-2)}
+.mic-btn svg{width:22px;height:22px;fill:#fff}
+
+.avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#ff7a00,#ff0033);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#fff;flex:0 0 auto;
+}
+
+/* ---------- Chip row ---------- */
+nav.chips{
+  position:fixed; left:0; right:0; top:var(--header-h);
+  height:var(--chip-h); z-index:40;
+  display:flex; align-items:center; gap:12px; padding:0 24px;
+  background:rgba(15,15,15,.95);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid transparent;
+  overflow-x:auto; scrollbar-width:none;
+}
+nav.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto; padding:8px 14px; border-radius:8px; font-size:14px; font-weight:500;
+  background:var(--bg-elev); color:#fff; transition:background .15s ease,color .15s ease,transform .15s ease;
+}
+.chip:hover{background:var(--bg-elev-2)}
+.chip.active{background:#fff;color:#0f0f0f;font-weight:600}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- Main / Grid ---------- */
+main{padding:calc(var(--header-h) + var(--chip-h) + 12px) 24px 40px 24px; min-height:100vh}
+
+.grid{
+  display:grid; gap:24px 16px;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.card{
+  background:transparent; border-radius:var(--radius); overflow:hidden;
+  cursor:pointer; transition:transform .15s ease;
+  display:flex; flex-direction:column; gap:12px;
+}
+.card:hover .thumb img{transform:scale(1.02)}
+.card:hover{background:var(--bg-soft)}
+
+.thumb{
+  position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:var(--radius); background:#000;
+}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+
+.duration{
+  position:absolute; right:8px; bottom:8px;
+  background:rgba(0,0,0,.8); color:#fff; font-size:12px; font-weight:500;
+  padding:2px 6px; border-radius:4px;
+}
+
+.info{display:flex;gap:12px;padding:0 4px 8px 4px}
+.info .ch{width:36px;height:36px;border-radius:50%;background:var(--bg-elev);flex:0 0 auto;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+.meta{flex:1;min-width:0}
+.title{font-size:15px;font-weight:600;color:#fff;margin:0 0 4px 0;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.sub{font-size:13px;color:var(--text-soft);line-height:1.35}
+.sub .ch-name{display:block}
+.sub .ch-name:hover{color:#fff}
+
+/* Ad card */
+.card.ad .info{flex-direction:row;align-items:flex-start}
+.ad-info-icon{width:20px;height:20px;border-radius:50%;background:var(--bg-elev);color:var(--text-soft);font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-right:8px;flex:0 0 auto}
+.ad-badge{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;font-weight:500;padding:2px 6px;border-radius:4px;letter-spacing:.04em}
+
+/* ---------- Player overlay ---------- */
+.player-overlay{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;overflow:auto}
+.player-overlay.open{display:flex;flex-direction:column;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.player-top{display:flex;align-items:center;padding:12px 16px;gap:16px;position:sticky;top:0;background:var(--bg);z-index:2;border-bottom:1px solid var(--border)}
+.player-top .icon-btn{margin-right:auto}
+.player-top .title-bar{font-weight:600;color:#fff;font-size:14px;opacity:.9;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.player-body{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;padding:24px;max-width:1800px;margin:0 auto;width:100%}
+@media (max-width:1100px){.player-body{grid-template-columns:1fr;padding:16px}}
+
+.player-frame{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden}
+.player-frame video{width:100%;height:100%;object-fit:contain;background:#000}
+
+.watch-title{font-size:1.25rem;font-weight:700;color:#fff;margin:16px 0 8px 0;line-height:1.3}
+.watch-meta{display:flex;flex-wrap:wrap;align-items:center;gap:12px;color:var(--text-soft);font-size:14px;margin-bottom:12px}
+.watch-channel{display:flex;align-items:center;gap:12px;margin:8px 0 16px 0}
+.watch-channel .ch{width:40px;height:40px}
+.watch-channel .name{font-weight:600;color:#fff}
+.watch-channel .subs{font-size:12px;color:var(--text-soft)}
+.subscribe-btn{margin-left:auto;background:#fff;color:#0f0f0f;padding:10px 16px;border-radius:24px;font-weight:600;font-size:14px;transition:opacity .15s ease}
+.subscribe-btn:hover{opacity:.85}
+
+.description-box{background:var(--bg-soft);border-radius:var(--radius);padding:12px;font-size:14px;color:#fff;line-height:1.45;margin-top:8px}
+.description-box .stats{font-weight:600;margin-bottom:6px}
+
+.up-next-title{font-size:1rem;font-weight:600;color:#fff;margin:0 0 12px 0;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.rec-card{display:flex;gap:8px;padding:8px;border-radius:8px;cursor:pointer;transition:background .15s ease}
+.rec-card:hover{background:var(--bg-soft)}
+.rec-card .thumb{width:168px;aspect-ratio:16/9;flex:0 0 auto}
+.rec-card .meta{flex:1;min-width:0;padding-top:0}
+.rec-card .title{font-size:14px;-webkit-line-clamp:2}
+.rec-card .sub .ch-name{font-size:12px}
+.rec-card .duration{font-size:11px;padding:1px 4px}
+
+/* ---------- Drawer / mobile ---------- */
+@media (max-width:700px){
+  .app-center{max-width:none}
+  .search-shell{max-width:none}
+  main{padding-left:8px;padding-right:8px}
+  .grid{grid-template-columns:1fr;gap:24px}
+  nav.chips{padding:0 8px;gap:8px}
+}
+
+/* Sidebar drawer (lazy, mini) */
+aside.drawer{
+  position:fixed;top:var(--header-h);left:0;bottom:0;width:240px;background:var(--bg-soft);
+  transform:translateX(-100%);transition:transform .2s ease;z-index:60;padding:12px 0;border-right:1px solid var(--border);overflow:auto
+}
+aside.drawer.open{transform:translateX(0)}
+.drawer-item{display:flex;align-items:center;gap:20px;padding:0 24px;height:40px;color:#fff;border-radius:8px;margin:0 12px;transition:background .15s ease;font-size:14px}
+.drawer-item:hover{background:var(--bg-elev)}
+.drawer-item.active{background:var(--bg-elev);font-weight:600}
+.drawer-item svg{width:24px;height:24px;fill:#fff}
+.drawer-section-title{padding:8px 24px;font-size:14px;color:var(--text-soft);font-weight:600;border-top:1px solid var(--border);margin-top:8px}
+
+/* small visual touch: subtle hover overlay */
+.thumb::after{
+  content:"";position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .15s ease;pointer-events:none;
+}
+.card:hover .thumb::after{background:rgba(0,0,0,.05)}
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="app-start">
+    <button class="icon-btn" id="menuBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24"><path d="M21 6H3V5h18v1zm0 5H3v1h18v-1zm0 6H3v1h18v-1z"/></svg>
+    </button>
+    <a href="#" class="brand" aria-label="CodeTube home">
+      <svg class="brand-mark" viewBox="0 0 32 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect class="bg" width="32" height="22" rx="5"/>
+        <polyline class="gt" points="10,7 16,11 10,15"/>
+        <rect class="un" x="19" y="13" width="8" height="2"/>
+      </svg>
+      <span class="brand-text">CodeTube</span>
+    </a>
+  </div>
+
+  <div class="app-center">
+    <form class="search-shell" onsubmit="event.preventDefault();return false">
+      <input type="search" placeholder="Search" aria-label="Search">
+      <button class="search-btn" type="submit" aria-label="Search">
+        <svg viewBox="0 0 24 24"><path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+      </button>
+    </form>
+    <button class="mic-btn" aria-label="Search with your voice">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+    </button>
+  </div>
+
+  <div class="app-end">
+    <button class="icon-btn" aria-label="Create">
+      <svg viewBox="0 0 24 24"><path d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm7-7v12c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h2.5l1.7-2h8.6l1.7 2H21c1.1 0 2 .9 2 2zm-2 0H3v12h16V6z"/></svg>
+    </button>
+    <button class="icon-btn" aria-label="Notifications">
+      <svg viewBox="0 0 24 24"><path d="M10 20h4c0 1.1-.9 2-2 2s-2-.9-2-2zm10-2.65V19H4v-1.65l2-1.88V11c0-2.79 1.91-5.14 4.5-5.81V3.5a1.5 1.5 0 1 1 3 0V5.19c2.59.67 4.5 3.02 4.5 5.81v4.47l2 1.88zM17 11c0-2.76-2.24-5-5-5s-5 2.24-5 5v5.45l-2 1.88V18h14v-1.67l-2-1.88V11z"/></svg>
+    </button>
+    <div class="avatar" aria-label="Your account">U</div>
+  </div>
+</header>
+
+<nav class="chips" id="chipBar" aria-label="Filter chips">
+  <button class="chip active" data-cat="all">All</button>
+  <button class="chip" data-cat="music">Music</button>
+  <button class="chip" data-cat="gaming">Gaming</button>
+  <button class="chip" data-cat="mixes">Mixes</button>
+  <button class="chip" data-cat="live">Live</button>
+  <button class="chip" data-cat="cs">Computer programming</button>
+  <button class="chip" data-cat="animation">Animation</button>
+  <button class="chip" data-cat="recent">Recently uploaded</button>
+  <button class="chip" data-cat="watched">Watched</button>
+  <button class="chip" data-cat="new">New to you</button>
+  <button class="chip" data-cat="dev">Devlogs</button>
+  <button class="chip" data-cat="ai">AI</button>
+</nav>
+
+<aside class="drawer" id="drawer" aria-label="Main menu">
+  <a class="drawer-item active" href="#"><svg viewBox="0 0 24 24"><path d="M4 21V10.08l8-6.96 8 6.96V21h-6v-7H10v7H4z"/></svg>Home</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M10 14.65v-5.3L15 12l-5 2.65zm7.77-4.33c-.77-.32-1.2-.5-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.65v-5.3L15 12l-5 2.65z"/></svg>Shorts</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M10 18v-6l5 3-5 3zm7-15H7v1h10V3zm3 3H4v1h16V6zm2 3H2v12h20V9zM3 10h18v10H3V10z"/></svg>Subscriptions</a>
+  <div class="drawer-section-title">You</div>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M11 7l6 6H5z"/></svg>History</a>
+  <div class="drawer-section-title">Subscriptions</div>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#fff" stroke-width="1.5"/></svg>Blender</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#fff" stroke-width="1.5"/></svg>Google Sample Videos</a>
+  <div class="drawer-section-title">More from CodeTube</div>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke="#fff" stroke-width="1.5" fill="none"/></svg>CodeTube Premium</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="1.5" fill="none"/></svg>CodeTube Studio</a>
+</aside>
+
+<main>
+  <div class="grid" id="grid"><!-- populated by JS --></div>
+</main>
+
+<!-- Watch overlay -->
+<div class="player-overlay" id="overlay" role="dialog" aria-label="Video player">
+  <div class="player-top">
+    <button class="icon-btn" id="closeWatch" aria-label="Close">
+      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+    <div class="title-bar">Watch on CodeTube</div>
+  </div>
+
+  <div class="player-body">
+    <div>
+      <div class="player-frame"><video id="playerVideo" controls playsinline></video></div>
+      <h1 class="watch-title" id="watchTitle"></h1>
+      <div class="watch-meta">
+        <span id="watchViews"></span> &middot; <span id="watchDate"></span>
+      </div>
+      <div class="watch-channel">
+        <div class="ch" id="watchChAvatar"></div>
+        <div>
+          <div class="name" id="watchChName"></div>
+          <div class="subs" id="watchChSubs"></div>
+        </div>
+        <button class="subscribe-btn">Subscribe</button>
+      </div>
+      <div class="description-box" id="watchDescription"></div>
+    </div>
+
+    <div>
+      <h2 class="up-next-title">Up next</h2>
+      <div id="recList"></div>
+    </div>
+  </div>
+</div>
+
 <script>
-const vids=[
-["Big Buck Bunny","Blender Foundation","https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4","https://dummyimage.com/300x170/ddd/000&text=Big+Buck+Bunny"],
-["Elephants Dream","Open Movie","https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4","https://dummyimage.com/300x170/ccc/000&text=Elephants+Dream"],
-["Sintel","Blender","https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4","https://dummyimage.com/300x170/bbb/000&text=Sintel"]];
-function play(v){s.src=v[2];p.load();tt.textContent=v[0];dd.textContent=v[1]}
-play(vids[0]);
-vids.forEach((v,i)=>{let c=document.createElement('div');c.className='card';c.innerHTML=`<img src="${v[3]}"><div><b>${v[0]}</b><br><small>${v[1]}</small></div>`;c.onclick=()=>play(v);list.appendChild(c);if(i==0){let a=document.createElement('div');a.className='card';a.id='ad';a.innerHTML=`<iframe data-aa='2447509' src='//acceptable.a-ads.com/2447509/?size=Adaptive'></iframe>`;list.appendChild(a);}});
-</script></body></html>
+/* ---------- Data ---------- */
+const videos = [
+  {
+    id:"bbb", title:"Big Buck Bunny - Official Blender Open Movie (4K)",
+    channel:"Blender", subs:"2.4M subscribers",
+    views:"12M views", date:"12 years ago",
+    duration:"9:56",
+    cat:"animation",
+    thumb:"https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    desc:"Big Buck Bunny is a 2008 animated short film produced by the Blender Foundation. The movie was made freely available as part of the open source Blender animation suite. It follows the adventures of a giant rabbit with a heart bigger than himself."
+  },
+  {
+    id:"edream", title:"Elephants Dream - The first Blender Open Movie",
+    channel:"Blender Open Movies",
+    subs:"436K subscribers",
+    views:"3.1M views", date:"14 years ago",
+    duration:"10:54",
+    cat:"animation",
+    thumb:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Elephants_Dream_s5_both.jpg/640px-Elephants_Dream_s5_both.jpg",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    desc:"Elephants Dream is the first open movie produced by the Blender Foundation. It explores a surreal mechanical world and the relationship between two characters, Proog and Emo."
+  },
+  {
+    id:"joyrides", title:"For Bigger Joyrides - Cinematic Test Sample",
+    channel:"Google Sample Videos",
+    subs:"1.1M subscribers",
+    views:"8.6M views", date:"10 years ago",
+    duration:"15:10",
+    cat:"mixes",
+    thumb:"https://dummyimage.com/640x360/1f1f1f/ffffff&text=For+Bigger+Joyrides&font-size=24",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    desc:"A 4K cinematic test sample used by developers to validate adaptive streaming, codec performance, and player UI integration."
+  },
+  {
+    id:"sintel", title:"Sintel - Durian Open Movie Trailer",
+    channel:"Blender Open Movies",
+    subs:"987K subscribers",
+    views:"5.4M views", date:"13 years ago",
+    duration:"14:48",
+    cat:"animation",
+    thumb:"https://dummyimage.com/640x360/2a2a2a/ffffff&text=Sintel&font-size=28",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+    desc:"Sintel is the third open movie by the Blender Foundation, following an epic fantasy adventure as she searches for her lost dragon companion, Scales."
+  },
+  {
+    id:"tears", title:"Tears of Steel - Mango Open Movie (Live Action + VFX)",
+    channel:"Blender Open Movies",
+    subs:"612K subscribers",
+    views:"2.7M views", date:"11 years ago",
+    duration:"12:14",
+    cat:"animation",
+    thumb:"https://dummyimage.com/640x360/303030/ffffff&text=Tears+of+Steel&font-size=22",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+    desc:"Tears of Steel was produced by the Blender Foundation to showcase open-source VFX pipelines, combining live-action footage with CGI environments and characters."
+  },
+  {
+    id:"subaru", title:"Subaru Outback On Street And Dirt - Sample Asset",
+    channel:"Google Sample Videos",
+    subs:"230K subscribers",
+    views:"540K views", date:"10 years ago",
+    duration:"1:01",
+    cat:"mixes",
+    thumb:"https://dummyimage.com/640x360/181818/ffffff&text=Subaru+Outback&font-size=22",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+    desc:"Subaru Outback On Street And Dirt — short test clip used to evaluate player buffering and seek performance on slower connections."
+  },
+  {
+    id:"volkswagen", title:"Volkswagen GTI Review - Sample Asset",
+    channel:"Google Sample Videos",
+    subs:"178K subscribers",
+    views:"320K views", date:"10 years ago",
+    duration:"0:32",
+    cat:"mixes",
+    thumb:"https://dummyimage.com/640x360/1c1c1c/ffffff&text=Volkswagen+GTI&font-size=22",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
+    desc:"Volkswagen GTI Review — quick 30s sample used in early HLS / DASH tutorials and adaptive bitrate demos."
+  },
+  {
+    id:"gopro", title:"GoPro HERO - Adventure Reel Sample",
+    channel:"Google Sample Videos",
+    subs:"412K subscribers",
+    views:"910K views", date:"9 years ago",
+    duration:"2:24",
+    cat:"live",
+    thumb:"https://dummyimage.com/640x360/292929/ffffff&text=GoPro+HERO&font-size=24",
+    src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/GoProHD.mp4",
+    desc:"GoPro HERO adventure reel — action sequence clip often used as a benchmark for low-light video playback performance."
+  }
+];
+
+/* ---------- Rendering ---------- */
+const grid = document.getElementById("grid");
+
+// Deterministic HSL color derived from a channel name string.
+function chipColor(channel){
+  let h=0;
+  for(let i=0;i<channel.length;i++) h=(h*31+channel.charCodeAt(i))>>>0;
+  return `hsl(${h%360} 60% 45%)`;
+}
+
+function channelAvatar(channel, id){
+  const initials = channel.split(/\s+/).slice(0,2).map(s=>s[0]).join("").toUpperCase();
+  const bg = chipColor(channel);
+  const idAttr = id ? ` id="${id}"` : "";
+  return `<div class="ch"${idAttr} style="background:${bg}">${initials}</div>`;
+}
+
+function videoCard(v){
+  return `
+  <article class="card" data-id="${v.id}" data-cat="${v.cat}">
+    <div class="thumb">
+      <img loading="lazy" src="${v.thumb}" alt="${v.title.replace(/"/g,'&quot;')}">
+      <span class="duration">${v.duration}</span>
+    </div>
+    <div class="info">
+      ${channelAvatar(v.channel)}
+      <div class="meta">
+        <h3 class="title">${v.title}</h3>
+        <div class="sub">
+          <span class="ch-name">${v.channel}</span>
+          <span>${v.views} &middot; ${v.date}</span>
+        </div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function adCard(){
+  // A-ADS ad unit 2447509 - injected as a Sponsored card to test ad placement
+  return `
+  <article class="card ad" data-id="ad-2447509">
+    <div class="thumb ad-thumb">
+      <div class="ad-badge">Ad</div>
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#181818;color:#aaa;font-size:12px;padding:10px;text-align:center">
+        <iframe data-aa="2447509" src="//acceptable.a-ads.com/2447509/?size=Adaptive" style="border:0;width:100%;height:100%;display:block" loading="lazy" referrerpolicy="no-referrer"></iframe>
+      </div>
+    </div>
+    <div class="info">
+      <span class="ad-info-icon" aria-hidden="true">i</span>
+      <div class="meta">
+        <h3 class="title">Acceptable Ads - Placement test (unit 2447509)</h3>
+        <div class="sub">
+          <span>A-ADS Self-Serve Network</span>
+          <span>Sponsored</span>
+        </div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function render(category){
+  let html = adCard();
+  const filtered = category === "all" ? videos : videos.filter(v => v.cat === category);
+  filtered.forEach(v => { html += videoCard(v); });
+  grid.innerHTML = html;
+}
+render("all");
+
+/* ---------- Filter chips ---------- */
+document.getElementById("chipBar").addEventListener("click",(e)=>{
+  const t = e.target.closest(".chip");
+  if(!t) return;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  t.classList.add("active");
+  render(t.dataset.cat);
+});
+
+/* ---------- Drawer ---------- */
+const drawer = document.getElementById("drawer");
+document.getElementById("menuBtn").addEventListener("click",()=>{
+  drawer.classList.toggle("open");
+});
+
+/* ---------- Watch overlay ---------- */
+const overlay = document.getElementById("overlay");
+const playerVideo = document.getElementById("playerVideo");
+const watchTitle = document.getElementById("watchTitle");
+const watchViews = document.getElementById("watchViews");
+const watchDate = document.getElementById("watchDate");
+const watchChName = document.getElementById("watchChName");
+const watchChSubs = document.getElementById("watchChSubs");
+const watchChAvatar = document.getElementById("watchChAvatar");
+const watchDescription = document.getElementById("watchDescription");
+const recList = document.getElementById("recList");
+const closeWatch = document.getElementById("closeWatch");
+
+function openVideo(v){
+  playerVideo.src = v.src;
+  playerVideo.poster = v.thumb;
+  playerVideo.play().catch(()=>{});
+  watchTitle.textContent = v.title;
+  watchViews.textContent = v.views;
+  watchDate.textContent = v.date;
+  watchChName.textContent = v.channel;
+  watchChSubs.textContent = v.subs;
+  // Re-query the DOM each call so a stale reference never drifts after outerHTML swap.
+  const prevAv = document.getElementById("watchChAvatar");
+  if(prevAv) prevAv.outerHTML = channelAvatar(v.channel, "watchChAvatar");
+  watchDescription.innerHTML = `<div class="stats">${v.views} &middot; ${v.date}</div>${v.desc}`;
+
+  recList.innerHTML = videos.filter(x=>x.id!==v.id).slice(0,6).map(x=>`
+    <div class="rec-card" data-id="${x.id}">
+      <div class="thumb"><img loading="lazy" src="${x.thumb}" alt=""><span class="duration">${x.duration}</span></div>
+      <div class="meta">
+        <h4 class="title">${x.title}</h4>
+        <div class="sub"><span class="ch-name">${x.channel}</span><span>${x.views} &middot; ${x.date}</span></div>
+      </div>
+    </div>`).join("");
+
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closePlayer(){
+  overlay.classList.remove("open");
+  playerVideo.pause();
+  playerVideo.removeAttribute("src");
+  playerVideo.load();
+  document.body.style.overflow = "";
+}
+
+grid.addEventListener("click",(e)=>{
+  const t = e.target.closest(".card");
+  if(!t) return;
+  const id = t.dataset.id;
+  const v = videos.find(x=>x.id===id);
+  if(v) openVideo(v);
+});
+
+recList.addEventListener("click",(e)=>{
+  const t = e.target.closest(".rec-card");
+  if(!t) return;
+  const v = videos.find(x=>x.id===t.dataset.id);
+  if(v) openVideo(v);
+});
+
+closeWatch.addEventListener("click",closePlayer);
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && overlay.classList.contains("open")) closePlayer(); });
+
+/* ---------- Search (demo) ---------- */
+document.querySelector(".search-shell input").addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    const q = e.currentTarget.value.trim().toLowerCase();
+    if(!q){ render("all"); document.querySelector('.chip[data-cat="all"]').click(); return; }
+    const found = videos.filter(v=> v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
+    if(found.length === 0){
+      grid.innerHTML = `<div style="color:#aaa;padding:60px 40px;text-align:center;font-size:18px">No results for &ldquo;${q.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}&rdquo;<div style="font-size:13px;color:#717171;margin-top:8px">Try different keywords or check the spelling.</div></div>`;
+    } else {
+      grid.innerHTML = adCard() + found.map(videoCard).join("");
+    }
+  }
+});
+</script>
+</body>
+</html>
