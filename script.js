@@ -150,9 +150,25 @@ function adCard(){
   </article>`;
 }
 
+// Compact Advertisement card sized to slot into the "Up next" sidebar.
+// The ad shows only while a video is playing (added inside openVideo()).
+function adRecCard(){
+  return `
+  <div class="rec-card ad-rec" aria-label="Sponsored content">
+    <div class="thumb ad-thumb-rec">
+      <span class="ad-tag">Ad</span>
+      <iframe data-aa="2447509" src="//acceptable.a-ads.com/2447509/?size=Adaptive" style="border:0;width:100%;height:100%;display:block;background:#f8f8f8" loading="lazy" referrerpolicy="no-referrer"></iframe>
+    </div>
+    <div class="meta">
+      <h4 class="title">Sponsored content</h4>
+      <div class="sub"><span class="ch-name">Advertisement</span></div>
+    </div>
+  </div>`;
+}
+
 function render(category){
-  let html = adCard();
   const filtered = category === "all" ? videos : videos.filter(v => v.cat === category);
+  let html = "";
   filtered.forEach(v => { html += videoCard(v); });
   grid.innerHTML = html;
 }
@@ -200,7 +216,7 @@ function openVideo(v){
   if(prevAv) prevAv.outerHTML = channelAvatar(v.channel, "watchChAvatar");
   watchDescription.innerHTML = `<div class="stats">${v.views} &middot; ${v.date}</div>${v.desc}`;
 
-  recList.innerHTML = videos.filter(x=>x.id!==v.id).slice(0,6).map(x=>`
+  recList.innerHTML = adRecCard() + videos.filter(x=>x.id!==v.id).slice(0,5).map(x=>`
     <div class="rec-card" data-id="${x.id}">
       <div class="thumb"><img loading="lazy" src="${x.thumb}" alt=""><span class="duration">${x.duration}</span></div>
       <div class="meta">
@@ -248,7 +264,7 @@ document.querySelector(".search-shell input").addEventListener("keydown",(e)=>{
     if(found.length === 0){
       grid.innerHTML = `<div style="color:#aaa;padding:60px 40px;text-align:center;font-size:18px">No results for &ldquo;${q.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}&rdquo;<div style="font-size:13px;color:#717171;margin-top:8px">Try different keywords or check the spelling.</div></div>`;
     } else {
-      grid.innerHTML = adCard() + found.map(videoCard).join("");
+      grid.innerHTML = found.map(videoCard).join("");
     }
   }
 });
