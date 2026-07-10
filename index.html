@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0f0f0f">
+<meta name="theme-color" content="#ffffff">
 <title>CodeTube - Your code, on demand</title>
 <style>
 :root{
-  --bg:#0f0f0f;
-  --bg-soft:#181818;
-  --bg-elev:#272727;
-  --bg-elev-2:#3a3a3a;
-  --border:rgba(255,255,255,.1);
-  --text:#f1f1f1;
-  --text-soft:#aaaaaa;
-  --text-mute:#717171;
-  --accent:#ff0033;        /* YouTube-red for hover/duration */
-  --shadow:0 4px 12px rgba(0,0,0,.4);
+  --bg:#ffffff;
+  --bg-soft:#f2f2f2;
+  --bg-elev:#ececec;
+  --bg-elev-2:#d9d9d9;
+  --border:rgba(0,0,0,.1);
+  --text:#0f0f0f;
+  --text-soft:#606060;
+  --text-mute:#909090;
+  --accent:#ff0033;        /* YouTube-red accent stays consistent in both modes */
+  --shadow:0 1px 2px rgba(0,0,0,.06);
   --radius:12px;
   --header-h:56px;
   --chip-h:56px;
@@ -33,7 +33,7 @@ img{display:block;max-width:100%}
 header.app{
   position:fixed; inset:0 0 auto 0; height:var(--header-h); z-index:50;
   display:flex; align-items:center; gap:16px; padding:0 16px;
-  background:rgba(15,15,15,.92);
+  background:rgba(255,255,255,.92);
   backdrop-filter:saturate(180%) blur(8px);
   -webkit-backdrop-filter:saturate(180%) blur(8px);
 }
@@ -42,37 +42,37 @@ header.app{
 
 .icon-btn{
   width:40px; height:40px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
-  color:#fff; transition:background .15s ease;
+  color:inherit; transition:background .15s ease;
 }
 .icon-btn:hover{background:var(--bg-elev-2)}
 .icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.icon-btn svg{width:24px;height:24px;fill:#fff}
+.icon-btn svg{width:24px;height:24px;fill:currentColor}
 
 .brand{display:inline-flex;align-items:center;gap:6px;padding:0 8px}
 .brand-img{display:block;width:auto;height:22px;max-width:56px;flex:0 0 auto}
-.brand-text{font-weight:700;font-size:1.35rem;letter-spacing:-.02em;color:#fff;line-height:1}
+/* .brand-text removed — the wordmark is baked into logo-light.png */
 
-.search-shell{display:flex;flex:1;align-items:center;border:1px solid var(--border);border-radius:40px 0 0 40px;overflow:hidden;background:#121212;height:40px;transition:border-color .15s ease,box-shadow .15s ease}
+.search-shell{display:flex;flex:1;align-items:center;border:1px solid var(--border);border-radius:40px 0 0 40px;overflow:hidden;  background:#f8f8f8;height:40px;transition:border-color .15s ease,box-shadow .15s ease}
 .search-shell:focus-within{border-color:#1c62b9;box-shadow:inset 0 0 0 1px #1c62b9}
-.search-shell input{flex:1;border:0;background:transparent;padding:0 16px;color:#fff;font-size:1rem;outline:none;min-width:0}
-.search-shell input::placeholder{color:#717171}
+.search-shell input{flex:1;border:0;background:transparent;padding:0 16px;color:inherit;font-size:1rem;outline:none;min-width:0}
+.search-shell input::placeholder{color:var(--text-mute)}
 .search-btn{width:64px;height:40px;background:var(--bg-elev);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border);transition:background .15s ease}
 .search-btn:hover{background:var(--bg-elev-2)}
-.search-btn svg{width:22px;height:22px;fill:#fff}
+.search-btn svg{width:22px;height:22px;fill:currentColor}
 
 .mic-btn{width:40px;height:40px;border-radius:50%;background:var(--bg-elev);display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease}
 .mic-btn:hover{background:var(--bg-elev-2)}
-.mic-btn svg{width:22px;height:22px;fill:#fff}
+.mic-btn svg{width:22px;height:22px;fill:currentColor}
 
 .search-toggle{
   width:40px;height:40px;border-radius:50%;
   display:inline-flex;align-items:center;justify-content:center;
-  background:none;border:0;cursor:pointer;color:#fff;
+  background:none;border:0;cursor:pointer;color:inherit;
   transition:background .15s ease;
 }
 .search-toggle:hover,.search-toggle.active{background:var(--bg-elev-2)}
 .search-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.search-toggle svg{width:24px;height:24px;fill:#fff}
+.search-toggle svg{width:24px;height:24px;fill:currentColor}
 
 /* Search dropdown panel - slides down from below the top nav */
 .search-dropdown{
@@ -80,7 +80,7 @@ header.app{
   z-index:45;
   padding:14px 24px;
   display:flex; gap:12px; align-items:center;
-  background:rgba(15,15,15,.96);
+  background:rgba(255,255,255,.96);
   backdrop-filter:saturate(180%) blur(8px);
   -webkit-backdrop-filter:saturate(180%) blur(8px);
   border-bottom:1px solid var(--border);
@@ -105,7 +105,7 @@ nav.chips{
   position:fixed; left:0; right:0; top:var(--header-h);
   height:var(--chip-h); z-index:40;
   display:flex; align-items:center; gap:12px; padding:0 24px;
-  background:rgba(15,15,15,.95);
+  background:rgba(255,255,255,.95);
   backdrop-filter:blur(6px);
   border-bottom:1px solid transparent;
   overflow-x:auto; scrollbar-width:none;
@@ -113,10 +113,10 @@ nav.chips{
 nav.chips::-webkit-scrollbar{display:none}
 .chip{
   flex:0 0 auto; padding:8px 14px; border-radius:8px; font-size:14px; font-weight:500;
-  background:var(--bg-elev); color:#fff; transition:background .15s ease,color .15s ease,transform .15s ease;
+  background:var(--bg-elev); color:inherit; transition:background .15s ease,color .15s ease,transform .15s ease;
 }
 .chip:hover{background:var(--bg-elev-2)}
-.chip.active{background:#fff;color:#0f0f0f;font-weight:600}
+.chip.active{background:#0f0f0f;color:#fff;font-weight:600}
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* ---------- Main / Grid ---------- */
@@ -147,12 +147,12 @@ main{padding:calc(var(--header-h) + var(--chip-h) + 12px) 24px 40px 24px; min-he
 }
 
 .info{display:flex;gap:12px;padding:0 4px 8px 4px}
-.info .ch{width:36px;height:36px;border-radius:50%;background:var(--bg-elev);flex:0 0 auto;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+.info .ch{width:36px;height:36px;border-radius:50%;background:var(--bg-elev);flex:0 0 auto;overflow:hidden;display:flex;align-items:center;justify-content:center;color:inherit;font-weight:700;font-size:14px}
 .meta{flex:1;min-width:0}
-.title{font-size:15px;font-weight:600;color:#fff;margin:0 0 4px 0;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.title{font-size:15px;font-weight:600;color:inherit;margin:0 0 4px 0;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .sub{font-size:13px;color:var(--text-soft);line-height:1.35}
 .sub .ch-name{display:block}
-.sub .ch-name:hover{color:#fff}
+.sub .ch-name:hover{color:#000}
 
 /* Ad card */
 .card.ad .info{flex-direction:row;align-items:flex-start}
@@ -166,7 +166,7 @@ main{padding:calc(var(--header-h) + var(--chip-h) + 12px) 24px 40px 24px; min-he
 
 .player-top{display:flex;align-items:center;padding:12px 16px;gap:16px;position:sticky;top:0;background:var(--bg);z-index:2;border-bottom:1px solid var(--border)}
 .player-top .icon-btn{margin-right:auto}
-.player-top .title-bar{font-weight:600;color:#fff;font-size:14px;opacity:.9;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-top .title-bar{font-weight:600;color:var(--text-mute);font-size:14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .player-body{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;padding:24px;max-width:1800px;margin:0 auto;width:100%}
 @media (max-width:1100px){.player-body{grid-template-columns:1fr;padding:16px}}
@@ -174,19 +174,19 @@ main{padding:calc(var(--header-h) + var(--chip-h) + 12px) 24px 40px 24px; min-he
 .player-frame{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden}
 .player-frame video{width:100%;height:100%;object-fit:contain;background:#000}
 
-.watch-title{font-size:1.25rem;font-weight:700;color:#fff;margin:16px 0 8px 0;line-height:1.3}
+.watch-title{font-size:1.25rem;font-weight:700;color:inherit;margin:16px 0 8px 0;line-height:1.3}
 .watch-meta{display:flex;flex-wrap:wrap;align-items:center;gap:12px;color:var(--text-soft);font-size:14px;margin-bottom:12px}
 .watch-channel{display:flex;align-items:center;gap:12px;margin:8px 0 16px 0}
 .watch-channel .ch{width:40px;height:40px}
-.watch-channel .name{font-weight:600;color:#fff}
+.watch-channel .name{font-weight:600;color:inherit}
 .watch-channel .subs{font-size:12px;color:var(--text-soft)}
-.subscribe-btn{margin-left:auto;background:#fff;color:#0f0f0f;padding:10px 16px;border-radius:24px;font-weight:600;font-size:14px;transition:opacity .15s ease}
+.subscribe-btn{margin-left:auto;background:#0f0f0f;color:#fff;padding:10px 16px;border-radius:24px;font-weight:600;font-size:14px;transition:opacity .15s ease}
 .subscribe-btn:hover{opacity:.85}
 
-.description-box{background:var(--bg-soft);border-radius:var(--radius);padding:12px;font-size:14px;color:#fff;line-height:1.45;margin-top:8px}
+.description-box{background:var(--bg-soft);border-radius:var(--radius);padding:12px;font-size:14px;color:inherit;line-height:1.45;margin-top:8px}
 .description-box .stats{font-weight:600;margin-bottom:6px}
 
-.up-next-title{font-size:1rem;font-weight:600;color:#fff;margin:0 0 12px 0;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.up-next-title{font-size:1rem;font-weight:600;color:inherit;margin:0 0 12px 0;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .rec-card{display:flex;gap:8px;padding:8px;border-radius:8px;cursor:pointer;transition:background .15s ease}
 .rec-card:hover{background:var(--bg-soft)}
 .rec-card .thumb{width:168px;aspect-ratio:16/9;flex:0 0 auto}
@@ -210,10 +210,10 @@ aside.drawer{
   transform:translateX(-100%);transition:transform .2s ease;z-index:60;padding:12px 0;border-right:1px solid var(--border);overflow:auto
 }
 aside.drawer.open{transform:translateX(0)}
-.drawer-item{display:flex;align-items:center;gap:20px;padding:0 24px;height:40px;color:#fff;border-radius:8px;margin:0 12px;transition:background .15s ease;font-size:14px}
+.drawer-item{display:flex;align-items:center;gap:20px;padding:0 24px;height:40px;color:inherit;border-radius:8px;margin:0 12px;transition:background .15s ease;font-size:14px}
 .drawer-item:hover{background:var(--bg-elev)}
 .drawer-item.active{background:var(--bg-elev);font-weight:600}
-.drawer-item svg{width:24px;height:24px;fill:#fff}
+.drawer-item svg{width:24px;height:24px;fill:currentColor}
 .drawer-section-title{padding:8px 24px;font-size:14px;color:var(--text-soft);font-weight:600;border-top:1px solid var(--border);margin-top:8px}
 
 /* small visual touch: subtle hover overlay */
@@ -232,7 +232,6 @@ aside.drawer.open{transform:translateX(0)}
     </button>
     <a href="#" class="brand" aria-label="CodeTube home">
       <img src="logo-light.png" alt="CodeTube" class="brand-img" width="56" height="22">
-      <span class="brand-text">CodeTube</span>
     </a>
   </div>
 
@@ -290,11 +289,11 @@ aside.drawer.open{transform:translateX(0)}
   <div class="drawer-section-title">You</div>
   <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M11 7l6 6H5z"/></svg>History</a>
   <div class="drawer-section-title">Subscriptions</div>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#fff" stroke-width="1.5"/></svg>Blender</a>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#fff" stroke-width="1.5"/></svg>Google Sample Videos</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Blender</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Google Sample Videos</a>
   <div class="drawer-section-title">More from CodeTube</div>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke="#fff" stroke-width="1.5" fill="none"/></svg>CodeTube Premium</a>
-  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="1.5" fill="none"/></svg>CodeTube Studio</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>CodeTube Premium</a>
+  <a class="drawer-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>CodeTube Studio</a>
 </aside>
 
 <main>
@@ -470,7 +469,7 @@ function adCard(){
   <article class="card ad" data-id="ad-2447509">
     <div class="thumb ad-thumb">
       <div class="ad-badge">Ad</div>
-      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#181818;color:#aaa;font-size:12px;padding:10px;text-align:center">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f8f8f8;color:#606060;font-size:12px;padding:10px;text-align:center">
         <iframe data-aa="2447509" src="//acceptable.a-ads.com/2447509/?size=Adaptive" style="border:0;width:100%;height:100%;display:block" loading="lazy" referrerpolicy="no-referrer"></iframe>
       </div>
     </div>
