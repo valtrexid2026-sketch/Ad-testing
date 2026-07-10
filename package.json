@@ -2,7 +2,7 @@
   "name": "ad-testing",
   "private": true,
   "version": "1.0.0",
-  "description": "Static video-player demo used to test ad placement (A-ADS unit 2447509).",
+  "description": "Static video-player demo used to test ad placement.",
   "scripts": {
     "install": "echo \"✅ ad-testing: static site — no external dependencies to install\"",
     "dev": "python3 -m http.server 3000 --bind 0.0.0.0",
