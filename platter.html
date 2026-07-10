@@ -481,7 +481,12 @@ function adRecCard(){
 function render(category){
   const filtered = category === "all" ? videos : videos.filter(v => v.cat === category);
   let html = "";
-  filtered.forEach(v => { html += videoCard(v); });
+  filtered.forEach((v, i) => {
+    html += videoCard(v);
+    // Ads ONLY on the Platter grid: inject an ad card after every 4 videos,
+    // never right after the very last one (avoids a stranded ad at the end).
+    if((i + 1) % 4 === 0 && i < filtered.length - 1) html += adCard();
+  });
   grid.innerHTML = html;
 }
 render("all");
@@ -522,7 +527,7 @@ function openVideo(v){
   if(prevAv) prevAv.outerHTML = channelAvatar(v.channel, "watchChAvatar");
   watchDescription.innerHTML = `<div class="stats">${v.views} &middot; ${v.date}</div>${v.desc}`;
 
-  recList.innerHTML = adRecCard() + videos.filter(x=>x.id!==v.id).slice(0,5).map(x=>`
+  recList.innerHTML = videos.filter(x=>x.id!==v.id).slice(0,5).map(x=>`
     <div class="rec-card" data-id="${x.id}">
       <div class="thumb"><img loading="lazy" src="${x.thumb}" alt=""><span class="duration">${x.duration}</span></div>
       <div class="meta">

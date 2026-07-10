@@ -594,7 +594,7 @@ function openVideo(v){
   if(prevAv) prevAv.outerHTML = channelAvatar(v.channel, "watchChAvatar");
   watchDescription.innerHTML = `<div class="stats">${v.views} &middot; ${v.date}</div>${v.desc}`;
 
-  recList.innerHTML = adRecCard() + videos.filter(x=>x.id!==v.id).slice(0,5).map(x=>`
+  recList.innerHTML = videos.filter(x=>x.id!==v.id).slice(0,5).map(x=>`
     <div class="rec-card" data-id="${x.id}">
       <div class="thumb"><img loading="lazy" src="${x.thumb}" alt=""><span class="duration">${x.duration}</span></div>
       <div class="meta">
