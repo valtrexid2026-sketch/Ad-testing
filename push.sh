@@ -18,7 +18,9 @@ echo "  origin/main ahead of us: $(git log --oneline HEAD..origin/main 2>/dev/nu
 
 echo
 echo "─── 3) stage new files ───"
-git add data.js index.html watch/ package.json
+# Include push.sh itself so iterations of this script ship alongside any
+# code/data changes (otherwise the deployment refuses to commit).
+git add data.js index.html watch/ package.json push.sh
 
 echo
 echo "─── 4) delete dead files (platter.html + script.js mirror) ───"
