@@ -1,39 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>VideoTube</title>
-
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VideoHub</title>
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-background:#0f0f0f;
-color:white;
-}
-
-header{
-height:60px;
-background:#181818;
-display:flex;
-align-items:center;
-padding:0 20px;
-font-size:24px;
-font-weight:bold;
-border-bottom:1px solid #333;
-}
-
-.logo{
-color:red;
-margin-right:8px;
-}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#222}
+header{display:flex;align-items:center;gap:16px;padding:10px 16px;background:#fff;border-bottom:1px solid #ddd;position:sticky;top:0}
+header img{height:40px}.search{flex:1}.search input{width:100%;padding:10px;border-radius:20px;border:1px solid #ccc}
+main{display:grid;grid-template-columns:2fr 1fr;gap:20px;padding:20px}
+video{width:100%;border-radius:12px;background:#000}
+.card{display:flex;gap:10px;background:#fff;border-radius:10px;padding:8px;margin-bottom:10px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.thumb{width:140px;height:80px;background:#ddd;border-radius:8px;object-fit:cover}
+#ad iframe{width:100%;height:90px;border:0}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+</style>
+</head><body>
+<header><img src="logo.png" alt="logo"><div class="search"><input placeholder="Search (demo)"></div></header>
+<main>
+<section>
+<video id="v" controls>
+<source id="src" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+</video>
+<h2 id="t">Big Buck Bunny</h2>
+<p id="d">Copyright-free Blender Foundation movie.</p>
+</section>
+<aside id="list"></aside>
+</main>
+<script>
+const vids=[
+{t:"Big Buck Bunny",d:"Blender Foundation",i:"https://dummyimage.com/320x180/cccccc/000&text=Big+Buck+Bunny",s:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"},
+{t:"Elephants Dream",d:"Open movie",i:"https://dummyimage.com/320x180/bbb/000&text=Elephants+Dream",s:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"},
+{t:"Sintel",d:"Blender",i:"https://dummyimage.com/320x180/aaa/000&text=Sintel",s:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"}
+];
+const list=document.getElementById("list");
+function play(v){src.src=v.s;document.getElementById("v").load();t.textContent=v.t;d.textContent=v.d;}
+vids.forEach((v,i)=>{
+ let c=document.createElement("div");c.className="card";
+ c.innerHTML=`<img class="thumb" src="${v.i}"><div><b>${v.t}</b><br><small>${v.d}</small></div>`;
+ c.onclick=()=>play(v);list.appendChild(c);
+ if(i==0){
+  let ad=document.createElement("div");
+  ad.className="card";ad.id="ad";
+  ad.innerHTML=`<iframe data-aa="2447509" src="//acceptable.a-ads.com/2447509/?size=Adaptive"></iframe>`;
+  list.appendChild(ad);
+ }
+});
+</script>
+</body></html>
 
 .container{
 display:flex;
